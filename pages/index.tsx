@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PageLayout from '../components/PageLayout'
+import ResolutionForm from '../components/ResolutionForm'
 import Resolutions from '../components/Resolutions'
 import type IResolution from '../types/resolution'
 
@@ -31,21 +32,11 @@ export default function Home() {
           resolutions={resolutions}
           onRemove={handleRemoveResolution}
         />
-        <form
-          className="flex flex-row gap-2 mx-16 shadow-sm"
+        <ResolutionForm
+          input={newResolution}
+          onInputChange={setNewResolution}
           onSubmit={handleAddNewResolution}
-        >
-          <input
-            className="flex-1 bg-slate-800 text-slate-100 rounded-md px-4 py-2 mt-4 outline-none"
-            type="text"
-            placeholder="Learn how to fly a plane"
-            value={newResolution}
-            onChange={(e) => setNewResolution(e.target.value)}
-          />
-          <button className="bg-slate-800 text-slate-100 rounded-md px-4 md:py-2 mt-4 hover:bg-slate-700 hover:scale-90 transition-all">
-            Add
-          </button>
-        </form>
+        />
       </section>
     </PageLayout>
   )
