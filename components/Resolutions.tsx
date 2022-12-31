@@ -1,22 +1,13 @@
 import Resolution from './Resolution'
-import type IResolution from '../types/resolution'
+import useResolutions from '../hooks/useResolutions'
 
-type ResolutionsProps = {
-  resolutions: IResolution[]
-  onEdit: (resolution: IResolution) => void
-  onRemove: (resolution: IResolution) => void
-}
+function Resolutions() {
+  const { resolutions } = useResolutions()
 
-function Resolutions({ resolutions, onEdit, onRemove }: ResolutionsProps) {
   return (
     <div className="flex flex-col gap-4 mx-16">
       {resolutions.map((resolution) => (
-        <Resolution
-          key={resolution.id}
-          resolution={resolution}
-          onEdit={onEdit}
-          onRemove={onRemove}
-        />
+        <Resolution key={resolution.id} resolution={resolution} />
       ))}
     </div>
   )

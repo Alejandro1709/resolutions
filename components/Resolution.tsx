@@ -1,13 +1,14 @@
 import { useState } from 'react'
+import useResolutions from '../hooks/useResolutions'
 import type IResolution from '../types/resolution'
 
 type ResolutionProps = {
   resolution: IResolution
-  onEdit: (resolution: IResolution) => void
-  onRemove: (resolution: IResolution) => void
 }
 
-function Resolution({ resolution, onEdit, onRemove }: ResolutionProps) {
+function Resolution({ resolution }: ResolutionProps) {
+  const { handleEditResolution, handleRemoveResolution } = useResolutions()
+
   const [value, setValue] = useState<string>('')
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isEdited, setIsEdited] = useState<boolean>(false)
@@ -15,7 +16,7 @@ function Resolution({ resolution, onEdit, onRemove }: ResolutionProps) {
   const handleConfirmEdition = () => {
     const resolutionToUpdate = { ...resolution, text: value }
 
-    onEdit(resolutionToUpdate)
+    handleEditResolution(resolutionToUpdate)
 
     setIsEditing(false)
 
@@ -105,7 +106,7 @@ function Resolution({ resolution, onEdit, onRemove }: ResolutionProps) {
             </button>
             <button
               className="flex-1 p-1 bg-slate-800 rounded-md hover:bg-slate-700 hover:scale-90 transition-all"
-              onClick={() => onRemove(resolution)}
+              onClick={() => handleRemoveResolution(resolution)}
             >
               <svg
                 className="w-6 h-6"
