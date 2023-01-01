@@ -1,14 +1,12 @@
-import { PrismaClient } from '@prisma/client'
 import PageLayout from '../components/PageLayout'
 import ResolutionForm from '../components/ResolutionForm'
 import Resolutions from '../components/Resolutions'
+import prisma from '../lib/prisma'
 import type IResolution from '../types/resolution'
 
 type ResolutionsProps = {
   resolutions: IResolution[]
 }
-
-const prisma = new PrismaClient()
 
 export default function Home({ resolutions }: ResolutionsProps) {
   return (

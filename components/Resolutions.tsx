@@ -1,13 +1,11 @@
 import Resolution from './Resolution'
-import useResolutions from '../hooks/useResolutions'
 import type IResolution from '../types/resolution'
 
 type ResolutionsProps = {
   resolutions: IResolution[]
 }
-function Resolutions({ resolutions }: ResolutionsProps) {
-  //const { resolutions } = useResolutions()
 
+function Resolutions({ resolutions }: ResolutionsProps) {
   return (
     <div className="flex flex-col gap-4 mx-16">
       {resolutions && resolutions.length > 0

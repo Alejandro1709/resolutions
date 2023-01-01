@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  SetStateAction,
-  useEffect,
-  useState,
-} from 'react'
+import React, { createContext, SetStateAction, useState } from 'react'
 import type IResolution from '../types/resolution'
 
 type ResolutionProviderProps = {
@@ -34,55 +29,88 @@ function ResolutionProvider({ children }: ResolutionProviderProps) {
   const [resolutions, setResolutions] = useState<IResolution[]>([])
   const [newResolution, setNewResolution] = useState<string>('')
 
-  useEffect(() => {
-    setResolutions(JSON.parse(localStorage.getItem('resolutions') || '[]'))
-  }, [])
-
-  const handleAddNewResolution = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddNewResolution = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
     e.preventDefault()
     if (newResolution) {
-      localStorage.setItem(
-        'resolutions',
-        JSON.stringify([
-          ...resolutions,
-          { id: resolutions.length + 1, text: newResolution },
-        ]),
-      )
+      try {
+        const res = await fetch('/api/resolutions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ text: newResolution }),
+        })
 
-      setResolutions((prevResolutions) => [
-        ...prevResolutions,
-        { id: prevResolutions.length + 1, text: newResolution },
-      ])
-      setNewResolution('')
+        const data = await res.json()
+
+        if (!data.success) {
+          throw new Error(data.message)
+        }
+
+        console.log(data)
+
+        setResolutions((prevResolutions) => [
+          ...prevResolutions,
+          { id: prevResolutions.length + 1, text: newResolution },
+        ])
+
+        setNewResolution('')
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 
-  const handleEditResolution = (resolution: IResolution) => {
-    const resolutionsFromStorage: IResolution[] = JSON.parse(
-      localStorage.getItem('resolutions') || '[]',
-    )
-    const resolutionFromStorage: IResolution | undefined =
-      resolutionsFromStorage.find((resol) => resol.id === resolution.id)
+  const handleEditResolution = async (resolution: IResolution) => {
+    try {
+      const res = await fetch(`/api/resolutions/${resolution.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: resolution.text }),
+      })
 
-    if (!resolutionFromStorage) return
+      const data = await res.json()
 
-    resolutionFromStorage.text = resolution.text
+      if (!data.success) {
+        throw new Error(data.message)
+      }
 
-    resolutions.splice(
-      resolutions.indexOf(resolutionFromStorage),
-      1,
-      resolutionFromStorage,
-    )
+      console.log(data)
 
-    localStorage.setItem('resolutions', JSON.stringify(resolutions))
-
-    setResolutions(resolutions)
+      setResolutions((prevResolutions) =>
+        prevResolutions.map((resol) =>
+          resol.id === resolution.id ? resolution : resol,
+        ),
+      )
+    } catch (error) {
+      console.error(error)
+    }
   }
 
-  const handleRemoveResolution = (resolution: IResolution) => {
-    const filtered = resolutions.filter((resol) => resol.id !== resolution.id)
-    localStorage.setItem('resolutions', JSON.stringify(filtered))
-    setResolutions(filtered)
+  const handleRemoveResolution = async (resolution: IResolution) => {
+    try {
+      const res = await fetch(`/api/resolutions/${resolution.id}`, {
+        method: 'DELETE',
+      })
+
+      const data = await res.json()
+
+      if (!data.success) {
+        throw new Error(data.message)
+      }
+
+      console.log(data)
+
+      setResolutions((prevResolutions) =>
+        prevResolutions.filter((resol) => resol.id !== resolution.id),
+      )
+    } catch (error) {
+      console.error(error)
+    }
   }
   return (
     <ResolutionContext.Provider
